@@ -36,30 +36,33 @@ public class KTsdbQuery extends TsdbQuery
 		{
 		TreeMap<byte[], Span> spanMap = findSpans();
 
-		for(Span span : spanMap.values())
+		if (spanMap != null)
 			{
-			cachedSearchResult.startDataPointSet(span.getInclusiveTags());
-			for (DataPoint dataPoint : span)
+			for(Span span : spanMap.values())
 				{
-				if (dataPoint.timestamp() < m_startTime || dataPoint.timestamp() > m_endTime)
+				cachedSearchResult.startDataPointSet(span.getInclusiveTags());
+				for (DataPoint dataPoint : span)
 					{
-					// Remove data points not in the time range
-					continue;
-					}
-
-				//Convert timestamps back to milliseconds
-				if (dataPoint.isInteger())
-					{
-					cachedSearchResult.addDataPoint(dataPoint.timestamp() *1000, dataPoint.longValue());
-					}
-				else
-					{
-					cachedSearchResult.addDataPoint(dataPoint.timestamp() *1000, dataPoint.doubleValue());
+					if (dataPoint.timestamp() < m_startTime || dataPoint.timestamp() > m_endTime)
+						{
+						// Remove data points not in the time range
+						continue;
+						}
+	
+					//Convert timestamps back to milliseconds
+					if (dataPoint.isInteger())
+						{
+						cachedSearchResult.addDataPoint(dataPoint.timestamp() *1000, dataPoint.longValue());
+						}
+					else
+						{
+						cachedSearchResult.addDataPoint(dataPoint.timestamp() *1000, dataPoint.doubleValue());
+						}
 					}
 				}
+	
+			cachedSearchResult.endDataPoints();
 			}
-
-		cachedSearchResult.endDataPoints();
 		}
 
 	private Map<String, String> createMapOfTags(SetMultimap<String, String> tags)
