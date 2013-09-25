@@ -13,6 +13,7 @@ import org.hbase.async.HBaseClient;
 import org.hbase.async.HBaseException;
 import org.kairosdb.core.datastore.CachedSearchResult;
 import org.kairosdb.core.datastore.DataPointRow;
+import org.kairosdb.core.datastore.TagSet;
 
 import net.opentsdb.core.TsdbQuery;
 import net.opentsdb.core.Query;
@@ -144,6 +145,12 @@ public class HBaseDatastore implements Datastore
 			throw new DatastoreException(e);
 			}
 		}
+		
+	@Override
+	public TagSet queryMetricTags(DatastoreMetricQuery query) throws DatastoreException
+		{
+		throw new DatastoreException("Query metric tags is not implemented for HBase");
+		}
 
 	@Override
 	public void close() throws DatastoreException
@@ -156,5 +163,10 @@ public class HBaseDatastore implements Datastore
 			{
 			throw new DatastoreException(e);
 			}
+		}
+		
+	public void deleteDataPoints(DatastoreMetricQuery deleteQuery, CachedSearchResult cachedSearchResult) throws DatastoreException
+		{
+		throw new DatastoreException("Delete not implemented");
 		}
 	}

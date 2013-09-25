@@ -9,7 +9,7 @@ print("===============================================");
 Version scheme: The first part is the version of opentsdb.  The number after
 the underscore is the revision of our code changes.
 */
-var version = '1.1.0_3'; //KairosDB beta2 to allow multiple tags
+var version = '1.1.0_4';
 var buildDir = 'tsbuild';
 var classDir = buildDir+'/classes';
 var jarDir = buildDir+'/jar';
@@ -22,9 +22,9 @@ var jarDirRule = new rules.DirectoryRule(jarDir);
 
 saw.addSearchPaths(".*\\.java", "src");
 saw.addSearchPaths(".*\\.java", "build/src");
-
 var sources = new ts.RegExFileSet("src", ".*\\.java")
-		.addExcludeDirs(["client", "static", "graph", "tools", "tsd"]).recurse();
+
+.addExcludeDirs(["client", "static", "graph", "tools", "tsd"]).recurse();
 var thirdPartyLibs = new ts.RegExFileSet("build/third_party", ".*\\.jar").recurse();
 classpath.addPaths(thirdPartyLibs.getFullFilePaths());
 var libs = new ts.RegExFileSet("lib", ".*\\.jar").recurse();
