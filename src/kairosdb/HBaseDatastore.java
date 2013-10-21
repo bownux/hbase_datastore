@@ -11,7 +11,7 @@ import org.kairosdb.core.datastore.DatastoreMetricQuery;
 import org.kairosdb.core.exception.DatastoreException;
 import org.hbase.async.HBaseClient;
 import org.hbase.async.HBaseException;
-import org.kairosdb.core.datastore.CachedSearchResult;
+import org.kairosdb.core.datastore.QueryCallback;
 import org.kairosdb.core.datastore.DataPointRow;
 import org.kairosdb.core.datastore.TagSet;
 
@@ -131,14 +131,13 @@ public class HBaseDatastore implements Datastore
 		}
 
 	@Override
-	public List<DataPointRow> queryDatabase(DatastoreMetricQuery query, CachedSearchResult cachedSearchResult) throws DatastoreException
+	public void queryDatabase(DatastoreMetricQuery query, QueryCallback cachedSearchResult) throws DatastoreException
 		{
 		try
 			{
 			KTsdbQuery tsdbquery = new KTsdbQuery(m_tsdb, query.getName(), query.getStartTime() / 1000, query.getEndTime() / 1000, query.getTags());
 
 			tsdbquery.run(cachedSearchResult);
-			return cachedSearchResult.getRows();
 			}
 		catch (Exception e)
 			{
@@ -165,7 +164,7 @@ public class HBaseDatastore implements Datastore
 			}
 		}
 		
-	public void deleteDataPoints(DatastoreMetricQuery deleteQuery, CachedSearchResult cachedSearchResult) throws DatastoreException
+	public void deleteDataPoints(DatastoreMetricQuery deleteQuery) throws DatastoreException
 		{
 		throw new DatastoreException("Delete not implemented");
 		}

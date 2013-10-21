@@ -9,7 +9,7 @@ print("===============================================");
 Version scheme: The first part is the version of opentsdb.  The number after
 the underscore is the revision of our code changes.
 */
-var version = '1.1.0_4';
+var version = '1.1.0_5';
 var buildDir = 'tsbuild';
 var classDir = buildDir+'/classes';
 var jarDir = buildDir+'/jar';

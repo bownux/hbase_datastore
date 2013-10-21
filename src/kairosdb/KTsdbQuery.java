@@ -5,7 +5,7 @@ import net.opentsdb.core.DataPoint;
 import net.opentsdb.core.Span;
 import net.opentsdb.core.TsdbQuery;
 import net.opentsdb.core.TSDB;
-import org.kairosdb.core.datastore.CachedSearchResult;
+import org.kairosdb.core.datastore.QueryCallback;
 
 import java.io.IOException;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class KTsdbQuery extends TsdbQuery
 		m_endTime = endTime;
 		}
 
-	public void run(CachedSearchResult cachedSearchResult) throws IOException
+	public void run(QueryCallback cachedSearchResult) throws IOException
 		{
 		TreeMap<byte[], Span> spanMap = findSpans();
 
