@@ -5,6 +5,7 @@ import net.opentsdb.core.DataPoint;
 import net.opentsdb.core.Span;
 import net.opentsdb.core.TsdbQuery;
 import net.opentsdb.core.TSDB;
+import org.kairosdb.core.GuiceKairosDataPointFactory;
 import org.kairosdb.core.datastore.QueryCallback;
 
 import java.io.IOException;
@@ -40,9 +41,11 @@ public class KTsdbQuery extends TsdbQuery
 			{
 			for(Span span : spanMap.values())
 				{
-				cachedSearchResult.startDataPointSet(span.getInclusiveTags());
+
+				cachedSearchResult.startDataPointSet(getRawType(span), span.getInclusiveTags());
 				for (DataPoint dataPoint : span)
 					{
+
 					if (dataPoint.timestamp() < m_startTime || dataPoint.timestamp() > m_endTime)
 						{
 						// Remove data points not in the time range
@@ -59,6 +62,8 @@ public class KTsdbQuery extends TsdbQuery
 						cachedSearchResult.addDataPoint(dataPoint.timestamp() *1000, dataPoint.doubleValue());
 						}
 					}
+
+                    //cachedSearchResult.addDataPoint(dataPoint);
 				}
 	
 			cachedSearchResult.endDataPoints();
@@ -85,4 +90,19 @@ public class KTsdbQuery extends TsdbQuery
 
 		return (ret);
 		}
-	}
+
+    /**
+     * Raw type of the first value in string
+     */
+    public String getRawType(Span span)
+    {
+        if (span.isInteger(0))
+        {
+            return ("long");
+        }
+        else
+        {
+            return ("double");
+        }
+    }
+}

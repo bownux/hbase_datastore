@@ -1,6 +1,7 @@
 package net.opentsdb.kairosdb;
 
 
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.stumbleupon.async.Callback;
@@ -20,6 +21,7 @@ import net.opentsdb.core.Query;
 import net.opentsdb.core.TSDB;
 
 import java.util.List;
+import java.util.SortedMap;
 
 public class HBaseDatastore implements Datastore
 {
@@ -53,6 +55,35 @@ public class HBaseDatastore implements Datastore
 		m_tsdb = new TSDB(hbaseClient, timeSeriesTable, uidTable);
 		}
 
+    @Override
+    public void putDataPoint(String metricName, ImmutableSortedMap<String, String> tags, DataPoint dp) throws DatastoreException
+    {
+        final class PutErrback implements Callback<Exception, Exception>
+        {
+            public DatastoreException call(final Exception arg)
+            {
+                return new DatastoreException(arg);
+            }
+
+            public String toString()
+            {
+                return "report error";
+            }
+        }
+        //Need to convert the timestamp to seconds
+        long timestamp = dp.getTimestamp() / 1000;
+
+        if (dp.isLong())
+        {
+            m_tsdb.addPoint(metricName, timestamp, dp.getLongValue(),
+                    tags).addErrback(new PutErrback());
+        }
+        else
+        {
+            m_tsdb.addPoint(metricName, timestamp, (float) dp.getDoubleValue(),
+                    tags).addErrback(new PutErrback());
+        }
+    }
 
 	@Override
 	public void putDataPoints(DataPointSet dps) throws DatastoreException
@@ -75,7 +106,7 @@ public class HBaseDatastore implements Datastore
 			//Need to convert the timestamp to seconds
 			long timestamp = dp.getTimestamp() / 1000;
 
-			if (dp.isInteger())
+			if (dp.isLong())
 				{
 				m_tsdb.addPoint(dps.getName(), timestamp, dp.getLongValue(),
 						dps.getTags()).addErrback(new PutErrback());
@@ -163,7 +194,7 @@ public class HBaseDatastore implements Datastore
 			throw new DatastoreException(e);
 			}
 		}
-		
+
 	public void deleteDataPoints(DatastoreMetricQuery deleteQuery) throws DatastoreException
 		{
 		throw new DatastoreException("Delete not implemented");
